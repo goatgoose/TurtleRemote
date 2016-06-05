@@ -23,22 +23,11 @@ function getBlockCharacter(block)
 end
 
 function drawHorizontalMap(x1, y1, x2, y2)
-	local offset = 0
-	for i = 1, #scan do
-		local block = scan[i]
-		if block.x > offset then
-			offset = block.x
-		end
-	end
-
 	local xDistance = x2 - x1 -- even
 	local yDistance = y2 - y1 -- even
 
-	-- local xOffset = offset + x1 + (xDistance / 2)
-	-- local yOffset = offset + y1 + (yDistance / 2)
-
-	local xOffset = offset + x1
-	local yOffset = offset + y1
+	local xOffset = x1 + (xDistance / 2)
+	local yOffset = y1 + (yDistance / 2)
 
 	for i = 1, #scan do
 		local block = scan[i]
@@ -65,7 +54,7 @@ function updateInterface()
 	-- 51 x 19 computer
 	-- 26 x 20 portable computer
 	clear()
-	drawHorizontalMap(1, 1, 51, 19)
+	drawHorizontalMap(1, 2, 18, 19)
 
 end
 
