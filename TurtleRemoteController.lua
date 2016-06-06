@@ -11,12 +11,16 @@ function clear()
 	term.setCursorPos(1,1)
 end
 
+function sendData(data)
+	if turtle_id ~= -1 then
+		rednet.send(turtle_id, data)
+	end
+end
+
 function notify(notification)
 	term.setCursorPos(1,1)
 	term.clearLine()
 	term.write(notification)
-	sleep(2)
-	term.clearLine()
 end
 
 function sendId()
@@ -95,7 +99,7 @@ function rednetListen()
 		local dataType = dataTable.dataType
 
 		if dataType == "register" then
-			if turtle_id ~= -1 then
+			if turtle_id == -1 then
 				turtle_id = id
 			end
 
@@ -119,6 +123,36 @@ function getInput()
 		if kEvent == "key" then
 			if param == keys.i then -- http://computercraft.info/wiki/Keys_(API)
 				notify(sendId())
+			elseif param == keys.up then
+				sendData(textutils.serialize({
+					dataType = "moveForward",
+					data = {}
+				}))
+			elseif param == keys.down then
+				sendData(textutils.serialize({
+					dataType = "moveBack",
+					data = {}
+				}))
+			elseif param == keys.left then
+				sendData(textutils.serialize({
+					dataType = "turnLeft",
+					data = {}
+				}))
+			elseif param == keys.right then
+				sendData(textutils.serialize({
+					dataType = "turnRight",
+					data = {}
+				}))
+			elseif param == keys.equals then
+				sendData(textutils.serialize({
+					dataType = "moveUp",
+					data = {}
+				}))
+			elseif param == keys.minus then
+				sendData(textutils.serialize({
+					dataType = "moveDown",
+					data = {}
+				}))
 			end
 		end
 

@@ -16,26 +16,38 @@ function sendData(data)
 end
 
 function moveForward()
-	turtle.forward()
+	if turtle.forward() then
+		sleep(0.3)
+		scan()
+	end
 end
 
 function moveBack()
-	turtle.back()
+	if turtle.back() then
+		sleep(0.3)
+		scan()
+	end
 end
 
 function moveUp()
-	turtle.up()
+	if turtle.up() then
+		sleep(0.3)
+		scan()
+	end
 end
 
 function moveDown()
-	turtle.down()
+	if turtle.down() then
+		sleep(0.3)
+		scan()
+	end
 end
 
 function turnLeft()
 	if turtle.turnLeft() then
 		facing = (facing - 1) % 4
 
-		sendData(textiutils.serialize({
+		sendData(textutils.serialize({
 			dataType = "facing",
 			data = {
 				facing = facing
@@ -48,7 +60,7 @@ function turnRight()
 	if turtle.turnRight() then
 		facing = (facing + 1) % 4
 
-		sendData(textiutils.serialize({
+		sendData(textutils.serialize({
 			dataType = "facing",
 			data = {
 				facing = facing
@@ -75,16 +87,37 @@ function rednetListen()
 	rednet.open("right")
 	while true do
 		local id, message = rednet.receive()
+
 		if message == "brain_id" then
 			brain_id = id
 			sendData(textutils.serialize({
 				dataType = "register",
 				data = {}
 			}))
+			scan()
+		else
+			local dataTable = textutils.unserialize(message)
+			local dataType = dataTable.dataType
 
-		elseif message == "moveForward" then
-			moveForward()
+			if dataType == "moveForward" then
+				moveForward()
 
+			elseif dataType == "moveBack" then
+				moveBack()
+
+			elseif dataType == "turnLeft" then
+				turnLeft()
+
+			elseif dataType == "turnRight" then
+				turnRight()
+
+			elseif dataType == "moveUp" then
+				moveUp()
+
+			elseif dataType == "moveDown" then
+				moveDown()
+
+			end
 		end
 	end
 
@@ -93,12 +126,9 @@ end
 function getInput()
 	while true do
 		clear()
-		print("PRESS ENTER TO SCAN")
 		local kEvent, param = os.pullEvent("key")
 		if kEvent == "key" then
-			if param == 28 then -- enter - http://computercraft.info/wiki/index.php?title=Raw_key_events
-				scan()
-			end
+
 		end
 
 	end
