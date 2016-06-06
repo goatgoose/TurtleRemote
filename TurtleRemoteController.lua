@@ -6,9 +6,58 @@ players = nil
 
 facing = -1
 
+notification = ""
+
+unregisteredScreenSpace = {}
+
+if not pocket then
+	for x = 1, 51 do
+		for y = 1, 19 do
+			table.insert(unregisteredScreenSpace, {x, y})
+		end
+	end
+else
+	for x = 1, 26 do
+		for y = 1, 20 do
+			table.insert(unregisteredScreenSpace, {x, y})
+		end
+	end
+end
+
 function clear()
 	term.clear()
 	term.setCursorPos(1,1)
+end
+
+function registerScreenSpace(x1, y1, x2, y2)
+	for i =1, #unregisteredScreenSpace do
+		local coord = unregisteredScreenSpace[i]
+		if coord ~= nil then
+			local x = coord[1]
+			local y = coord[2]
+			if x >= x1 and x <= x2 and y >= y1 and y <= y2 then
+				unregisteredScreenSpace[i] = nil
+			end
+		end
+	end
+end
+
+function unregisterScreenSpace(x1, y1, x2, y2)
+	for x = x1, x2 do
+		for y = y1, y2 do
+			table.insert(unregisteredScreenSpace, {x, y})
+		end
+	end
+end
+
+function fillUnusedScreenSpace()
+	for i = 1, #unregisteredScreenSpace do
+		local coord = unregisteredScreenSpace[i]
+		if coord ~= nil then
+			term.setCursorPos(coord[1], coord[2])
+			term.write("|")
+		end
+	end
 end
 
 function sendData(data)
@@ -53,6 +102,8 @@ function getFacingCharacter(facing)
 end
 
 function drawHorizontalMap(x1, y1, x2, y2)
+	registerScreenSpace(x1, y1, x2, y2)
+
 	local xDistance = x2 - x1 -- odd
 	local yDistance = y2 - y1 -- odd
 
@@ -83,12 +134,17 @@ function drawPlayerList(x1, y1, x2, y2)
 
 end
 
+function drawInfo(x1, y1, x2, y2)
+
+end
+
 function updateInterface()
 	-- 51 x 19 computer
 	-- 26 x 20 portable computer
 	clear()
-	drawHorizontalMap(1, 2, 51, 18)
+	drawHorizontalMap(1, 2, 31, 10)
 
+	fillUnusedScreenSpace()
 end
 
 function rednetListen()
